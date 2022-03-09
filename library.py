@@ -99,6 +99,66 @@ def forward_backward(U: list, L: list, b: list) -> list:
 """
 Gauss Jordan
 """
+def gauss_jordan(A: np.ndarray, b: np.ndarray) -> np.ndarray:
+    def partial_pivot(A: np.ndarray, b: np.ndarray):
+        n = len(A)
+        for i in range(n-1):
+            if abs(A[i][i]) < 1e-10:
+                for j in range(i+1,n):
+                    if abs(A[j][i]) > abs(A[i][i]):
+                        A[j], A[i] = A[i], A[j]  # interchange A[i] and A[j]
+                        b[j], b[i] = b[i], b[j]  # interchange b[i] and b[j]
+
+    n = len(A)
+    partial_pivot(A, b)
+    for i in range(n):
+        pivot = A[i][i]
+        b[i] = b[i] / pivot
+        for c in range(i, n):
+            A[i][c] = A[i][c] / pivot
+
+        for k in range(n):
+            if k != i and A[k][i] != 0:
+                factor = A[k][i]
+                b[k] = b[k] - factor*b[i]
+                for j in range(i, n):
+                    A[k][j] = A[k][j] - factor*A[i][j]
+
+    x = b
+    return x
+
+# def gauss_jordan(A: np.ndarray, b: np.ndarray) -> np.ndarray:
+#     # Pivots for a given row k
+#     def partial_pivot(A: np.ndarray, b: np.ndarray, k: int) -> tuple:
+#         n = len(A)
+#         if abs(A[k,k]) < 1e-10:
+#             for i in range(k+1, n):
+#                 if abs(A[i,k]) > abs(A[k,k]):
+#                     A[k], A[i] = A[i], A[k]
+#                     b[k], b[i] = b[i], b[k]
+
+#         return A, b
+
+#     n = len(A)
+#     for i in range(n):
+#         A, b = partial_pivot(A, b, i)
+#         # set pivot row
+#         pivot = A[i,i]
+#         # Divide row with pivot (and corresponding operation on b)
+#         for j in range(i, n):
+#             A[i,j] /= pivot
+
+#         b[i] /= pivot
+
+#         for j in range(n):
+#             if abs(A[j,i]) > 1e-10 and j != i:
+#                 temp = A[j,i]
+#                 for k in range(i, n):
+#                     A[j,k] = A[j,k] - temp * A[i,k]
+#                 b[j] = b[j] - temp * b[i]
+
+#     return b
+
 
 
 
@@ -106,12 +166,12 @@ Gauss Jordan
 LU Decomposition
 """
 def lu_decomposition(A: list, b: list) -> list:
-    # Partial pivoting with matrix 'a', vector 'b', and dimension 'n'
+    # Partial pivoting with matrix 'A', vector 'b'
     def partial_pivot(A: list, b: list):
         count = 0   # keeps a track of number of exchanges
         n = len(A)
         for i in range(n-1):
-            if abs(A[i][i]) == 0:
+            if abs(A[i][i]) < 1e-10:
                 for j in range(i+1,n):
                     if abs(A[j][i]) > abs(A[i][i]):
                         A[j], A[i] = A[i], A[j]  # interchange ith and jth rows of matrix 'A'
@@ -156,6 +216,7 @@ Cholesky Decomposition
 def cholesky(A: np.ndarray, b: np.ndarray) -> np.ndarray:
     n = len(A)
     L = np.zeros((n, n))
+
     for i in range(n):
         total1 = 0
         for k in range(i):
@@ -180,7 +241,12 @@ def jacobi(A: np.ndarray, b: np.ndarray, tol: float) -> np.ndarray:
     n = len(A)
     x = np.ones(n)     # define a dummy vector for storing solution vector
     xold = np.zeros(n)
+    iterations = []; residue = [];
+    count = 0
     while np.linalg.norm(xold - x) > tol:
+        iterations.append(count)
+        count += 1
+        residue.append(np.linalg.norm(xold - x))
         xold = x.copy()
         for i in range(n):
             total = 0
@@ -190,7 +256,7 @@ def jacobi(A: np.ndarray, b: np.ndarray, tol: float) -> np.ndarray:
 
             x[i] = 1/A[i,i] * (b[i] - total)
 
-    return x
+    return x, iterations, residue
 
 
 """
@@ -199,10 +265,13 @@ Gauss-Seidel
 def gauss_seidel(A: np.ndarray, b: np.ndarray, tol: float) -> np.ndarray:
     n = len(A)
     x = np.zeros(n)
-    k = 0
-    x0 = x.copy()
+    x0 = np.ones(n)
+    iterations = []; residue = [];
+    count = 0       # counts the number of iterations
 
-    while True:
+    while np.linalg.norm(x-x0) > tol:
+        iterations.append(count)
+        count += 1
         for i in range(n):
             s1, s2 = 0, 0
             for j in range(i):
@@ -212,11 +281,10 @@ def gauss_seidel(A: np.ndarray, b: np.ndarray, tol: float) -> np.ndarray:
 
             x[i] = 1/A[i][i] * (b[i] - s1 - s2)
 
-        if np.linalg.norm(x-x0) < tol:
-            return x
-
-        k += 1
+        residue.append(np.linalg.norm(x-x0))
         x0 = x.copy()
+
+    return x, iterations, residue
 
 """
 Conjugate Gradient
@@ -232,16 +300,21 @@ def conjgrad(A: np.ndarray, b: np.ndarray, tol: float) -> np.ndarray:
     r = b - A@x
     d = r.copy()
     rprevdot = np.dot(r.T, r)
+    iterations = []; residue = [];
+    count = 0       # counts the number of iterations
 
+    # convergence in n steps
     for i in range(n):
-        Ad = A@d
+        iterations.append(count)
+        residue.append(r)
+        Ad = A @ d
         alpha = rprevdot / np.dot(d.T, Ad)
         x += alpha*d
         r -= alpha*Ad
         rnextdot = np.dot(r.T, r)
 
         if np.linalg.norm(r) < tol:
-            return x
+            return x, iterations, residue
 
         else:
             beta = rnextdot / rprevdot
@@ -462,43 +535,41 @@ def linear_fit(xvals: np.ndarray, yvals: np.ndarray, variance: np.ndarray):
 """
 Polynomial Fit
 """
-def polynomial(xvals: np.ndarray, yvals: np.ndarray, variance: np.ndarray, k:
-        int):
+def polynomial(xvals: np.ndarray, yvals: np.ndarray, variance: np.ndarray,
+        degree: int = 1):
     """r
     xvals, yvals: data points given as a list (separately) as input
     Variance: given as input for every datapoint
-    k: the degree of polynomial
+    degree: the degree of polynomial
 
     Return values:
         a0, a1, a2
-        Quadratic plot: y = a0 + a1*x + a2*x**2
+        Polynomial plot: y = a0 + a1*x + a2*x**2 + ... + a_{n-1}*x^{n-1}
+
+    Returns a linear fit if `degree` not predefined
     """
     n = len(xvals)
+    params = degree + 1  # no. of parameters
+    A = np.zeros((params, params))      # Matrix
+    b = np.zeros(params)                # Vector
 
-    sx1 = sum(xvals)
-    sx2 = 0
-    sx3 = 0
-    sx4 = 0
+    for i in range(params):
+        for j in range(params):
+            total = 0
+            for k in range(n):
+                total += xvals[k] ** (i+j) / variance[k]**2
 
-    sy = sum(yvals)
-    sxy = 0
-    sx2y = 0
+            A[i,j] = total
 
-    for i in range(n):
-        sx2 += xvals[i]**2
-        sx3 += xvals[i]**3
-        sx4 += xvals[i]**4
-        sxy += xvals[i] * yvals[i]
-        sx2y += xvals[i]**2 * yvals[i]
+    for i in range(params):
+        total = 0
+        for k in range(n):
+            total += (xvals[k]**i * yvals[k]) / variance[k]**2
 
-    # Construct matrices from the above calculated values
-    A = [[n, sx1, sx2], [sx1, sx2, sx3], [sx2, sx3, sx4]]
-    b = [sy, sxy, sx2y]
+        b[i] = total
 
-    # Solve for coefficients a0, a1, a2 for, y = a0 + a1*x + a2*x**2
-    sol = lin_solver(A, b)
-
-    return sol
+    paramsVec = lu_decomposition(A, b)
+    return paramsVec
 
 
 """
