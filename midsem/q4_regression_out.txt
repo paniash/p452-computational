@@ -1,0 +1,6 @@
+Lifetime:  91.08264534723905
+Error in lifetime:  6.993032401147983
+t =  8.909545442950504
+t_crit =  1.86
+
+# Since t > t_crit, hence the fit is not acceptable and we reject the null hypothesis.

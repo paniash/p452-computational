@@ -1,0 +1,12 @@
+Obtained:
+
+Eigenvalues:  3.7320506262146718 3.000000065037196
+Eigenvectors:  [-0.28887516  0.50020001 -0.57735022  0.49979991 -0.28847506] [-4.99746874e-01  4.99751066e-01  1.77992916e-04 -5.00248795e-01
+  5.00252981e-01]
+
+Given:
+
+Eigenvalues:  3.7320508075688776 3.0
+Eigenvectors:  [0.0, 0.9999999999999999, 1.7320508075688772, 2.0, 1.7320508075688774] [2.4987341010479502j, 2.4987341010479502j, 2.4987341010479502j, 2.4987341010479502j, 2.4987341010479502j]
+
+# Discrepancy: The eigenvectors obtained and given are different. This can be explained due to the fact that power method is generally not recommended for more than one eigenvalue. This causes the corresponding eigenvectors to accumulate large errors as deflation is carried on.

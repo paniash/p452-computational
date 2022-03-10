@@ -13,7 +13,7 @@ Helper Functions
 # Read matrix from a file given as a string (space separated file)
 def read_matrix(file):
     with open(file, 'r') as f:
-        a = [[int(num) for num in line.split(' ')] for line in f]
+        a = [[float(num) for num in line.split(' ')] for line in f]
 
     return a
 
@@ -73,6 +73,7 @@ def gs_decompose(A):
 
     return L, U
 
+# Reading csv file
 def read_csv(path):
     with open(path, 'r+') as file:
         results = []
@@ -249,24 +250,24 @@ def cholesky(A: np.ndarray, b: np.ndarray) -> np.ndarray:
 """
 Jacobi Method
 """
-def jacobi(A: np.ndarray, b: np.ndarray, tol: float) -> np.ndarray:
+def jacobi(A: list, b: list, tol: float) -> list:
     n = len(A)
-    x = np.ones(n)     # define a dummy vector for storing solution vector
-    xold = np.zeros(n)
+    x = [1 for i in range(n)]     # define a dummy vector for storing solution vector
+    xold = [0 for i in range(n)]
     iterations = []; residue = [];
     count = 0
-    while np.linalg.norm(xold - x) > tol:
+    while norm(vec_sub(xold, x)) > tol:
         iterations.append(count)
         count += 1
-        residue.append(np.linalg.norm(xold - x))
+        residue.append(norm(vec_sub(xold, x)))
         xold = x.copy()
         for i in range(n):
             total = 0
             for j in range(n):
                 if i != j:
-                    total += A[i,j] * x[j]
+                    total += A[i][j] * x[j]
 
-            x[i] = 1/A[i,i] * (b[i] - total)
+            x[i] = 1/A[i][i] * (b[i] - total)
 
     return x, iterations, residue
 
@@ -274,14 +275,14 @@ def jacobi(A: np.ndarray, b: np.ndarray, tol: float) -> np.ndarray:
 """
 Gauss-Seidel
 """
-def gauss_seidel(A: np.ndarray, b: np.ndarray, tol: float) -> np.ndarray:
+def gauss_seidel(A: list, b: list, tol: float) -> list:
     n = len(A)
-    x = np.zeros(n)
-    x0 = np.ones(n)
+    x = [0 for i in range(n)]
+    x0 = [1 for i in range(n)]
     iterations = []; residue = [];
     count = 0       # counts the number of iterations
 
-    while np.linalg.norm(x-x0) > tol:
+    while norm(vec_sub(x0,x)) > tol:
         iterations.append(count)
         count += 1
         for i in range(n):
@@ -293,7 +294,7 @@ def gauss_seidel(A: np.ndarray, b: np.ndarray, tol: float) -> np.ndarray:
 
             x[i] = 1/A[i][i] * (b[i] - s1 - s2)
 
-        residue.append(np.linalg.norm(x-x0))
+        residue.append(norm(vec_sub(x,x0)))
         x0 = x.copy()
 
     return x, iterations, residue
