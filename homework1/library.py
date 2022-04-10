@@ -104,12 +104,6 @@ def read_csv(path):
         # after for-loop
         return results
 
-def kronecker(i, j):
-    if i==j:
-        return 1
-    else:
-        return 0
-
 ##################################################
 ############ MATRIX INVERSION ####################
 ##################################################
