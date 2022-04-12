@@ -1,3 +1,8 @@
 # Output
 Ordered coefficients in original basis: [0.5746586674195995, 4.725861442142078, -11.128217777643616, 7.6686776229096685]
 Ordered coefficients in modified Chebyshev basis: [1.1609694790335525, 0.39351446798815237, 0.04684983209010658, 0.23964617571596986]
+
+# Relative merit (Courtesy: https://math24.pro/matrix_condition_number)
+For the original basis, the condition number obtained for the corresponding matrix is 21980.9 compared to the condition number in the case of the modified Chebyshev functions where it was found to be 4.79553.
+
+A lower condition number shows more robustness towards fluctuations/perturbations in the datapoints and thus, the modified Chebyshev basis is a better basis for fitting the given datapoints.
