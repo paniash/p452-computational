@@ -1,5 +1,7 @@
 # Output
-Estimated value of pi using integration = 3.141315788841529
-Estimated value of pi using hits = 3.1404
+(i) piHits = 3.143601478643051, piIntegrated = 3.14048
+(ii) piHits = 3.1411842545237674, piIntegrated = 3.14
 
-# Comment on the value of a and m
+# Comment on the value of a and m on pi accuracy
+The choice of seed decides the accuracy of pi that is obtained.
+Here, we notice that for higher 'a' and 'm' value the accuracy shows no particular trend with piHits showing an increased accuracy but piIntegrated shows a decreased accuracy.

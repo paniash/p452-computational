@@ -36,7 +36,7 @@ def polyLeastSquare(xvals: np.array, yvals: np.array, degree: int = 1):
     paramsVec = lu_decomposition(A, b)
     return paramsVec, A
 
-def chebyshev(x, order):
+def chebyshev(x: float, order: int) -> float:
     if order == 0:
         return 1
     elif order == 1:

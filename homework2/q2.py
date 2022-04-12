@@ -1,4 +1,5 @@
-from library import monteCarlo, mlcg
+from library import mlcg
+import numpy as np
 from math import sqrt
 
 def integrand(x):
@@ -8,9 +9,27 @@ def integrand(x):
 def circle(x, y):
     return x**2 + y**2 - 1
 
-def piEstimate(N):
-    xrand = mlcg(34.56, 65, 1, N)
-    yrand = mlcg(63.21, 23, 1, N)
+"""
+Monte Carlo integration
+"""
+def piIntegration(func, seed, a, m, N):
+    # Generate list of N random points between lims
+    xrand = mlcg(seed, a, m, N)
+    xrand = np.array(xrand) / m
+
+    summation = 0
+    for i in range(N):
+        summation += func(xrand[i])
+
+    total = 1/float(N) * summation
+
+    return total
+
+def piHits(seed1, seed2, a, m, N):
+    xrand = mlcg(seed1, a, m, N)
+    yrand = mlcg(seed2, a, m, N)
+    xrand = np.array(xrand) / m
+    yrand = np.array(yrand) / m
 
     hits = 0
     for i in range(N):
@@ -20,7 +39,9 @@ def piEstimate(N):
     estim = hits / N
     return estim
 
-integrated_pi = monteCarlo(integrand, 100000)
-hit_pi = piEstimate(10000)
-print("Estimated value of pi using integration = {}".format(4*integrated_pi))
-print("Estimated value of pi using hits = {}".format(4*hit_pi))
+integrated_pi1 = piIntegration(integrand, 234.34, 65, 1021, 100000)
+hit_pi1 = piHits(75.345, 36.232, 65, 1021, 100000)
+integrated_pi2 = piIntegration(integrand, 234.34, 572, 16381, 100000)
+hit_pi2 = piHits(75.345, 36.232, 572, 16381, 100000)
+print("(i) piHits = {}, piIntegrated = {}".format(4*integrated_pi1, 4*hit_pi1))
+print("(ii) piHits = {}, piIntegrated = {}".format(4*integrated_pi2, 4*hit_pi2))
