@@ -34,7 +34,41 @@ def polyLeastSquare(xvals: np.array, yvals: np.array, degree: int = 1):
         b[i] = total
 
     paramsVec = lu_decomposition(A, b)
-    return paramsVec
+    return paramsVec, A
+
+def chebyshev(x, order):
+    if order == 0:
+        return 1
+    elif order == 1:
+        return 2*x - 1
+    elif order == 2:
+        return 8*x**2 - 8*x + 1
+    elif order == 3:
+        return 32*x**3 - 48*x**2 + 18*x - 1
+
+def chebyfit(xvals: np.array, yvals: np.array, degree: int):
+    n = len(xvals)
+    params = degree + 1
+    A = np.zeros((params, params))
+    b = np.zeros(params)
+
+    for i in range(params):
+        for j in range(params):
+            total = 0
+            for k in range(n):
+                total += chebyshev(xvals[k], j) * chebyshev(xvals[k], i)
+
+            A[i, j] = total
+
+    for i in range(params):
+        total = 0
+        for k in range(n):
+            total += chebyshev(xvals[k], i) * yvals[k]
+
+        b[i] = total
+
+    paramsVec = lu_decomposition(A, b)
+    return paramsVec, A
 
 
 file = read_csv("assign2fit.txt")
@@ -44,9 +78,16 @@ yvals = [sub[1] for sub in file]
 xvals = list(map(float, xvals))
 yvals = list(map(float, yvals))
 
-params = polyLeastSquare(xvals, yvals, 3)
 # Condition number of matrix = 21980.9
+params, mat1 = polyLeastSquare(xvals, yvals, 3)
+
+# Condition number of matrix = 4.79553
+chebyparams, mat2 = chebyfit(xvals, yvals, 3)
+
 a0, a1, a2, a3 = params[0], params[1], params[2], params[3]
+c0, c1, c2, c3 = chebyparams[0], chebyparams[1], chebyparams[2], chebyparams[3]
+print("Ordered coefficients in original basis: {}".format(params))
+print("Ordered coefficients in modified Chebyshev basis: {}".format(chebyparams))
 
 x = np.linspace(0, 1, 100)
 y = a0 + a1 * x + a2 * x**2 + a3 * x**3
@@ -56,16 +97,4 @@ plt.xlabel("$x$")
 plt.ylabel("$y$")
 plt.title("Cubic-fit polynomial")
 plt.legend()
-plt.show()
-
-# Modified Chebyshev basis
-# We solve for the coefficients using LU decomposition
-A = [[1, -1, 1, -1], [0, 2, -8, 18], [0, 0, 8, -48], [0, 0, 0, 32]]
-b = [a0, a1, a2, a3]
-chebyshevs = lu_decomposition(A, b)
-chebycoef0, chebycoef1, chebycoef2, chebycoef3 = (
-    chebyshevs[0],
-    chebyshevs[1],
-    chebyshevs[2],
-    chebyshevs[3],
-)
+plt.savefig("q1_plot.png")

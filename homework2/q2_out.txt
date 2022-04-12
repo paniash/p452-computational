@@ -1,0 +1,5 @@
+# Output
+Estimated value of pi using integration = 3.141315788841529
+Estimated value of pi using hits = 3.1404
+
+# Comment on the value of a and m
