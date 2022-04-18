@@ -1,0 +1,8 @@
+#!/bin/sh
+
+infile=$1
+outfile=$2
+tr -s '\t' <$infile | tr '\t' ',' >$outfile
+sed -i '1d' $outfile
+sed -i 's/.$//' $outfile
+sed -i 's/.$//' $outfile
