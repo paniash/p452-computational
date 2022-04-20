@@ -26,15 +26,8 @@ def linear_fit(xvals: np.ndarray, yvals: np.ndarray):
     a = (sxx*sy - sx*sxy) / delta
     b = (s*sxy - sx*sy) / delta
 
-    # calculate chi^2 / dof
-    dof = n - 2
-    chi2 = 0
-    for i in range(n):
-        chi2 += (yvals[i] - a - b*xvals[i])**2
-
     delA2 = sxx / delta; delB2 = s / delta
-    cov = -sx / delta
-    return a, b, delA2, delB2, cov, chi2
+    return a, b, delA2, delB2
 
 # def variance(yvals: list) -> float:
 #     mean = 0; mean2 = 0
