@@ -29,6 +29,7 @@ class Mosfet:
         r"""
         Class describing the output characteristics of a MOSFET device.
         """
+
         def __init__(self, filename):
             self.filename = filename
             file = read_csv(self.filename)
@@ -100,7 +101,6 @@ class Mosfet:
             self.condForward = self.slope(self.vForward, self.iForward)
             return self.condForward
 
-
         def plotter(self, forORback):
             r"""
             forORback: user-specified string either "forward" or "backward"
@@ -138,6 +138,7 @@ class Mosfet:
         r"""
         Class describing the transfer characteristics of a MOSFET device.
         """
+
         def __init__(self, filename):
             file = read_csv(filename)
             v = [sub[0] for sub in file]
@@ -156,7 +157,7 @@ class Mosfet:
             """
             plt.plot(self.voltage, self.rootcurr)
             plt.xlabel("$V_g$ (volts)")
-            plt.ylabel("$I_{ds}$ (Amps)")
+            plt.ylabel("$\sqrt{I_{ds}}$ (Amps$^{0.5}$)")
             plt.title("Hysteresis curve obtained for the transfer characteristics")
             plt.show()
 
@@ -194,8 +195,8 @@ class Mosfet:
                     uminval = abs(val - ulim)
                     uIndex = index
 
-            self.vForward = self.vForward[:uIndex+1][lIndex:]
-            self.isqForward = self.isqForward[:uIndex+1][lIndex:]
+            self.vForward = self.vForward[: uIndex + 1][lIndex:]
+            self.isqForward = self.isqForward[: uIndex + 1][lIndex:]
 
             lminval = abs(self.isqBackward[0] - llim)
             uminval = abs(self.isqBackward[-1] - ulim)
@@ -208,31 +209,51 @@ class Mosfet:
                     uminval = abs(val - ulim)
                     uIndex = index
 
-            self.vBackward = self.vBackward[:uIndex+1][lIndex:]
-            self.isqBackward = self.isqBackward[:uIndex+1][lIndex:]
-
+            self.vBackward = self.vBackward[: uIndex + 1][lIndex:]
+            self.isqBackward = self.isqBackward[: uIndex + 1][lIndex:]
 
         def mobility(self, length, width, capacitance):
             grad = fit(self.vForward, self.isqForward)[1]
             mu = (2 * length * grad**2) / (width * capacitance)
             return mu
 
-        def hysteresis(self):
-            aForward = fit(self.vForward, self.isqForward)[0]
-            bForward = fit(self.vForward, self.isqForward)[1]
+        def vthreshold(self, forORback):
+            if forORback == "forward" or forORback == "Forward":
+                aForward = fit(self.vForward, self.isqForward)[0]
+                bForward = fit(self.vForward, self.isqForward)[1]
+                return -aForward / bForward
 
-            aBackward = fit(self.vBackward, self.isqBackward)[0]
-            bBackward = fit(self.vBackward, self.isqBackward)[1]
-            return abs(-aForward / bForward + aBackward / bBackward)
+            elif forORback == "backward" or forORback == "Backward":
+                aBackward = fit(self.vBackward, self.isqBackward)[0]
+                bBackward = fit(self.vBackward, self.isqBackward)[1]
+                return -aBackward / bBackward
 
-    def reliability(self):
-        r"""
-        Finds the reliability factor of the MOSFET device.
-        It is defined as the ratio of the maximum channel conductivity
-        experimentally achieved in a FET at the maximum gate voltage to the
-        maximum channel conductivity expected in a correctly functioning ideal
-        FET with the claimed carrier mobility \mu and identical other device
-        parameters at the same maximum gate voltage.
-        Ref: Nature Materials
-        """
-        grad = fit(self.vForward, self.iForward)
+            else:
+                raise NameError("String should be either 'forward' or 'backward'!")
+
+        def delVthreshold(self):
+            return abs(self.vthreshold("forward") - self.vthreshold("backward"))
+
+        def reliability(self):
+            r"""
+            Finds the reliability factor of the MOSFET device.
+            It is defined as the ratio of the maximum channel conductivity
+            experimentally achieved in a FET at the maximum gate voltage to the
+            maximum channel conductivity expected in a correctly functioning ideal
+            FET with the claimed carrier mobility \mu and identical other device
+            parameters at the same maximum gate voltage.
+            Ref: Nature Materials
+            """
+            grad = fit(self.vForward, self.isqForward)[1]
+            idsMax, idsZero = 0, 0
+            vgsMax = 0
+            for index, val in enumerate(self.voltage):
+                if self.voltage[index] == 60.0:
+                    idsMax = self.rootcurr[index]
+                    vgsMax = self.voltage[index]
+
+                if self.voltage[index] == 0.0:
+                    idsZero = self.rootcurr[index]
+
+            r = ((idsMax - idsZero) / vgsMax) ** 2 / (grad**2)
+            return r
