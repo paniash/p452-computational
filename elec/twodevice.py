@@ -3,6 +3,7 @@ from elec.fit import linear_fit as fit
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 class TwoDevice:
     r"""
     string - user specified (source or drain)
@@ -85,6 +86,11 @@ class TwoDevice:
             elif forORback == "backward" or forORback == "Backward":
                 return self.slope(self.vsBackward, self.isBackward)
 
+            else:
+                raise NameError(
+                    "String argument should be either 'forward' or 'backward'!"
+                )
+
         elif self.string == "drain" or self.string == "Drain":
             if forORback == "forward" or forORback == "Forward":
                 return self.slope(self.vForward, self.idForward)
@@ -92,9 +98,16 @@ class TwoDevice:
             elif forORback == "backward" or forORback == "Backward":
                 return self.slope(self.vdBackward, self.idBackward)
 
+            else:
+                raise NameError(
+                    "String argument should be either 'forward' or 'backward'!"
+                )
+
+        else:
+            raise NameError("String argument should be either 'source' or 'drain'!")
+
     def hysteresis(self):
-        return abs(self.conductivity("forward") -
-                self.conductivity("backward"))
+        return abs(self.conductivity("forward") - self.conductivity("backward"))
 
     def plotter(self, forORback):
         if self.string == "source" or self.string == "Source":
@@ -130,6 +143,11 @@ class TwoDevice:
                 plt.ylabel("Backward source current (Amp)")
                 plt.legend()
 
+            else:
+                raise NameError(
+                    "String argument should be either 'forward' or 'backward'!"
+                )
+
         elif self.string == "drain" or self.string == "Drain":
             if forORback == "forward" or forORback == "Forward":
                 a = fit(self.vForward, self.idForward)[0]
@@ -162,6 +180,14 @@ class TwoDevice:
                 plt.xlabel("Backward voltage (volts)")
                 plt.ylabel("Backward drain current (Amp)")
                 plt.legend()
+
+            else:
+                raise NameError(
+                    "String argument should be either 'forward' or 'backward'!"
+                )
+
+        else:
+            raise NameError("String argument should be either 'source' or 'drain'!")
 
 
 # read file
