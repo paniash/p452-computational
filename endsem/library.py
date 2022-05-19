@@ -141,6 +141,8 @@ def forward_backward(U: list, L: list, b: list) -> list:
 """
 Gauss Jordan
 """
+
+
 def gauss_jordan(A: list, b: list) -> list:
     def partial_pivot(A: list, b: list):
         n = len(A)
@@ -206,6 +208,8 @@ def gauss_jordan(A: list, b: list) -> list:
 """
 LU Decomposition
 """
+
+
 def lu_decomposition(A: list, b: list) -> list:
     # Partial pivoting with matrix 'A', vector 'b'
     def partial_pivot(A: list, b: list):
@@ -261,6 +265,8 @@ def lu_decomposition(A: list, b: list) -> list:
 """
 Cholesky Decomposition
 """
+
+
 def cholesky(A: np.ndarray, b: np.ndarray) -> np.ndarray:
     n = len(A)
     L = np.zeros((n, n))
@@ -286,6 +292,8 @@ def cholesky(A: np.ndarray, b: np.ndarray) -> np.ndarray:
 """
 Jacobi Method
 """
+
+
 def jacobi(A: list, b: list, tol: float) -> list:
     n = len(A)
     x = [1 for i in range(n)]  # define a dummy vector for storing solution vector
@@ -312,6 +320,8 @@ def jacobi(A: list, b: list, tol: float) -> list:
 """
 Gauss-Seidel
 """
+
+
 def gauss_seidel(A: list, b: list, tol: float) -> list:
     n = len(A)
     x = [0 for i in range(n)]
@@ -340,6 +350,8 @@ def gauss_seidel(A: list, b: list, tol: float) -> list:
 """
 Conjugate Gradient
 """
+
+
 def conjgrad(A: list, b: list, tol: float) -> list:
     """r
     Function to solve a set of linear equations using conjugate gradient
@@ -384,6 +396,8 @@ def conjgrad(A: list, b: list, tol: float) -> list:
 """
 Power Method
 """
+
+
 def power_method(A: np.ndarray, x: np.ndarray, tol: float, eignum: int = 1) -> tuple:
     """r
     Function to evaluate the eigenvalues and corresponding eigenvectors for a
@@ -434,6 +448,8 @@ def power_method(A: np.ndarray, x: np.ndarray, tol: float, eignum: int = 1) -> t
 """
 Jacobi Method (using Given's rotation)
 """
+
+
 def given_jacobi(A: np.ndarray, tol: float) -> tuple:
     """r
     Generates a transformation matrix to kill the non-zero off-diagonal
@@ -513,6 +529,8 @@ def given_jacobi(A: np.ndarray, tol: float) -> tuple:
 """
 Jackknife: Finds the mean and variance of population via finite sampling
 """
+
+
 def jackknife(yis: list) -> tuple:
     delAverages = []  # holds all the yk averages for each j
     n = len(yis)
@@ -537,6 +555,8 @@ def jackknife(yis: list) -> tuple:
 Bootstrap: Resampling of data points from unknown distribution
 Implementation of empirical bootstrap
 """
+
+
 def bootstrap(xis: list, B: int) -> tuple:
     bootSamples = []
     n = len(xis)
@@ -595,6 +615,8 @@ def linear_fit(xvals: np.ndarray, yvals: np.ndarray, variance: np.ndarray):
 """
 Polynomial Fit
 """
+
+
 def polynomial(
     xvals: np.ndarray, yvals: np.ndarray, variance: np.ndarray, degree: int = 1
 ):
@@ -638,6 +660,7 @@ def polynomial(
         varcoeff.append(C[i, i])
 
     return paramsVec, varcoeff
+
 
 def chebyshev(x: float, order: int) -> float:
     if order == 0:
@@ -685,6 +708,8 @@ def chebyfit(xvals: np.array, yvals: np.array, degree: int):
 """
 Discrete Fourier Transform
 """
+
+
 def dft(x: np.ndarray) -> np.ndarray:
     N = len(x)
     n = np.ndarray([i for i in range(N)])
@@ -698,6 +723,8 @@ def dft(x: np.ndarray) -> np.ndarray:
 """
 Pseudorandom number generator
 """
+
+
 def mlcg(seed: float, a: float, m: float, num: int) -> list:
     """
     num: Number of random values
@@ -712,16 +739,17 @@ def mlcg(seed: float, a: float, m: float, num: int) -> list:
 
     return rands
 
+
 def random_walk(N):
     """
     N: Number of steps of the random walk
     """
-    pos_x = 0    # instantaneous x coordinate
-    pos_y = 0    # instantaneous y coordinate
-    x = []      # list of all the x coordinates of the walk
-    y = []      # list of all the y coordinates of the walk
-    total_randnums = 2*N
-    i = int(N/2)
+    pos_x = 0  # instantaneous x coordinate
+    pos_y = 0  # instantaneous y coordinate
+    x = []  # list of all the x coordinates of the walk
+    y = []  # list of all the y coordinates of the walk
+    total_randnums = 2 * N
+    i = int(N / 2)
     for _ in range(N):
         x.append(pos_x)
         y.append(pos_y)
@@ -733,6 +761,7 @@ def random_walk(N):
         i += 1
 
     return x, y
+
 
 # Function to return all the averages, i.e. RMS distance, radial distance and
 # average displacement of x and y
@@ -748,14 +777,14 @@ def eval_averages(N, num_walks=100):
     avg_y = 0
     for i in range(num_walks):
         x, y = random_walk(N)
-        x_last = x.pop()    # last x coordinate of the walk
-        y_last = y.pop()    # last y coordinate of the walk
+        x_last = x.pop()  # last x coordinate of the walk
+        y_last = y.pop()  # last y coordinate of the walk
         rms_square += x_last**2 + y_last**2
-        radial_distance += sqrt(x_last**2 + y_last**2)/float(num_walks)
-        avg_x += x_last/float(num_walks)
-        avg_y += y_last/float(num_walks)
+        radial_distance += sqrt(x_last**2 + y_last**2) / float(num_walks)
+        avg_x += x_last / float(num_walks)
+        avg_y += y_last / float(num_walks)
 
-    rms = sqrt(rms_square/float(num_walks))
+    rms = sqrt(rms_square / float(num_walks))
 
     return rms, radial_distance, avg_x, avg_y
 
@@ -763,6 +792,8 @@ def eval_averages(N, num_walks=100):
 """
 Monte Carlo integration
 """
+
+
 def monteCarlo(func, N):
     # Generate list of N random points between lims
     xrand = mlcg(234.34, 65, 1, N)
@@ -779,6 +810,8 @@ def monteCarlo(func, N):
 """
 RK4 for coupled ODEs
 """
+
+
 def forward_euler(dydx, y0, x0, xf, step_size):
     """Yields solution from x=x0 to x=xf"""
     x = []
@@ -821,14 +854,18 @@ def rk4coupled(d2ydx2, dydx, x0, y0, z0, xf, step_size):
             x.append(x[i] + step_size)
             k1 = step_size * dydx(x[i], y[comp][i], z[comp][i])
             l1 = step_size * d2ydx2(x[i], y[comp][i], z[comp][i])
-            k2 = step_size * dydx(x[i] + step_size / 2, y[comp][i] + k1 / 2,
-                    z[comp][i] + l1 / 2)
-            l2 = step_size * d2ydx2(x[i] + step_size / 2, y[comp][i] + k1 / 2,
-                    z[comp][i] + l1 / 2)
-            k3 = step_size * dydx(x[i] + step_size / 2, y[comp][i] + k2 / 2,
-                    z[comp][i] + l2 / 2)
-            l3 = step_size * d2ydx2(x[i] + step_size / 2, y[comp][i] + k2 / 2,
-                    z[comp][i] + l2 / 2)
+            k2 = step_size * dydx(
+                x[i] + step_size / 2, y[comp][i] + k1 / 2, z[comp][i] + l1 / 2
+            )
+            l2 = step_size * d2ydx2(
+                x[i] + step_size / 2, y[comp][i] + k1 / 2, z[comp][i] + l1 / 2
+            )
+            k3 = step_size * dydx(
+                x[i] + step_size / 2, y[comp][i] + k2 / 2, z[comp][i] + l2 / 2
+            )
+            l3 = step_size * d2ydx2(
+                x[i] + step_size / 2, y[comp][i] + k2 / 2, z[comp][i] + l2 / 2
+            )
             k4 = step_size * dydx(x[i] + step_size, y[comp][i] + k3, z[comp][i] + l3)
             l4 = step_size * d2ydx2(x[i] + step_size, y[comp][i] + k3, z[comp][i] + l3)
 
@@ -836,6 +873,7 @@ def rk4coupled(d2ydx2, dydx, x0, y0, z0, xf, step_size):
             z[comp].append(z[comp][i] + (l1 + 2 * l2 + 2 * l3 + l4) / 6)
 
     return x, y, z
+
 
 def runge_kutta(d2ydx2, dydx, x0, y0, z0, xf, step_size):
     x = []
@@ -931,6 +969,8 @@ def shooting_method(
 """
 Gaussian Quadrature
 """
+
+
 def gaussQuad(func, n, llim, ulim):
     # Change of variable for converting to interval [-1,1]
     def newf(x, func, llim, ulim):
@@ -984,80 +1024,92 @@ def gaussQuad(func, n, llim, ulim):
             * newf(1 / 3 * sqrt(5 + 2 * sqrt(10 / 7)), func, llim, ulim)
         )
 
+
 """
 Partial Differential Equations: Diffusion equation
 """
+
+
+def k(x, mu=0.5, sigma=0.05):
+    return np.exp(-((x - mu) ** 2) / (2 * sigma**2)) / np.sqrt(2 * np.pi * sigma**2)
+
+
 def g(x, L=1.0):
     return np.sin(np.pi * x / L)
 
-def pdeExplicit(L: int, nx: int, delT: float, tmax: float, g, a=0, b=0):
+
+def pdeExplicit(L: int, n: int, dt: float, tmax: float, g: float, a=0, b=0):
     """
     L: [0,L] spatial domain
-    nx: number of spatial mesh points
+    n: number of spatial mesh points
     tmax: propagation time
-    delT: time step
+    dt: time step
     g: g(x) boundary condition at t=0 points
     a, b: a(t), b(t) boundary conditions at x=0 / x=L points
     """
-    delX = L / (nx+1)
-    alpha = delT / (delX**2)
-    A = np.zeros((nx, nx))
-    for i in range(nx):
-        A[i, i] = 1 - 2*alpha
-        for j in range(nx):
-            if j == i+1 or j == i-1:
-                A[i, j] = alpha
+    # n+1 is the number of mesh points
+    u = [0] * (n + 1)
+    unew = [0] * (n + 1)
 
-    x = [0]
-    for i in range(nx-1):
-        x.append(x[i] + delX)
-    x = np.array(x)
+    # Since a(t) = b(t) = 0
+    u[0], unew[0] = a, a
+    u[n], unew[n] = b, b
 
-    # At time t=0
-    V0 = []
-    for i in range(nx):
-        V0.append(g(x[i], L))
-    V0[-1] = V0[0]
+    # Step size
+    dx = L / n
+    alpha = dt / (dx**2)
 
-    V0 = np.array(V0)
-    V = V0.copy()
-    for _ in range(int(tmax / delT)):
-        V = np.matmul(A, V)
+    xvals = [0]
+    for i in range(1, n):
+        x = i * dx
+        u[i] = g(x)
+        xvals.append(x)
 
-    return V, x
+    xvals.append(xvals[-1] + dx)
 
-def pdeImplicit(L: int, nx: int, delT: float, tmax: float, g, a=0, b=0):
+    # Time iteration
+    t = dt
+    while t < tmax:
+        for i in range(1, n):
+            # differential eqn
+            unew[i] = alpha * u[i - 1] + (1 - 2 * alpha) * u[i] + alpha * u[i + 1]
+            u[i] = unew[i].copy()
+        t += dt
+
+    return u, xvals
+
+
+def pdeImplicit(L: int, n: int, dt: float, tmax: float, g: float, a=0, b=0):
     """
     L: [0,L] spatial domain
-    nx: number of spatial mesh points
+    n: number of spatial mesh points
     tmax: propagation time
-    delT: time step
+    dt: time step
     g: g(x) boundary condition at t=0 points
     a, b: a(t), b(t) boundary conditions at x=0 / x=L points
     """
-    delX = L / (nx+1)
-    alpha = delT / (delX**2)
-    A = np.zeros((nx, nx))
-    for i in range(nx):
-        A[i, i] = 1 + 2*alpha
-        for j in range(nx):
-            if j == i+1 or j == i-1:
+    dx = L / (n + 1)
+    alpha = dt / (dx**2)
+    A = np.zeros((n, n))
+    for i in range(n):
+        A[i, i] = 1 + 2 * alpha
+        for j in range(n):
+            if j == i + 1 or j == i - 1:
                 A[i, j] = -alpha
 
     x = [0]
-    for i in range(nx-1):
-        x.append(x[i] + delX)
-    x = np.array(x)
+    for i in range(n - 1):
+        x.append(x[i] + dx)
 
     # At time t=0
-    V0 = []
-    for i in range(nx):
-        V0.append(g(x[i], L))
-    V0[-1] = V0[0]
+    v0 = []
+    for i in range(n):
+        v0.append(g(x[i], L))
+    v0[-1] = v0[0]
 
-    V0 = np.array(V0)
-    V = V0.copy()
-    for _ in range(int(tmax / delT)):
-        V = np.matmul(np.linalg.inv(A), V)
+    v0 = np.array(v0)
+    v = v0.copy()
+    for _ in range(int(tmax / dt)):
+        v = np.matmul(np.linalg.inv(A), v)
 
-    return V, x
+    return v, x
