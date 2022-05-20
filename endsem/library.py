@@ -1013,6 +1013,71 @@ def shooting_method(
     else:
         return x, y, z  # bang-on solution with z_guess1
 
+# Solves 2nd order ODE given Dirichlet boundary conditions
+def shootingCoupled(
+    d2ydx2, dydx, x0, y0, xf, yf, z_guess1, z_guess2, step_size, tol=1e-6
+):
+    """
+    x0: Lower boundary value of x
+    y0 = y(x0)
+    xf: Upper boundary value of x
+    yf = y(xf)
+    z = dy/dx
+    y, z are vectors. x is a scalar
+    """
+    size = len(y0)
+    y = [0] * size
+    z = [0] * size
+    for comp in range(size):
+        x, y[comp], z[comp] = runge_kutta(d2ydx2, dydx, x0, y0[comp], z_guess1, xf, step_size)
+        yn = y[comp][-1]
+
+        if abs(yn - yf[comp]) > tol:
+            if yn < yf[comp]:
+                zeta_l = z_guess1
+                yl = yn
+
+                x, y[comp], z[comp] = runge_kutta(d2ydx2, dydx, x0, y0[comp], z_guess2, xf, step_size)
+                yn = y[comp][-1]
+
+                if yn > yf[comp]:
+                    zeta_h = z_guess2
+                    yh = yn
+
+                    # calculate zeta using Lagrange interpolation
+                    zeta = lagrange_interpolation(zeta_h, zeta_l, yh, yl, yf[comp])
+
+                    # using this zeta to solve using RK4
+                    x, y[comp], z[comp] = runge_kutta(d2ydx2, dydx, x0,
+                            y0[comp], zeta, xf, step_size)
+                    return x, y, z
+
+                else:
+                    print("Bracketing FAIL! Try another set of guesses.")
+
+            elif yn > yf[comp]:
+                zeta_h = z_guess1
+                yh = yn
+
+                x, y[comp], z[comp] = runge_kutta(d2ydx2, dydx, x0, y0[comp], z_guess2, xf, step_size)
+                yn = y[-1]
+
+                if yn < yf[comp]:
+                    zeta_l = z_guess2
+                    yl = yn
+
+                    # calculate zeta using Lagrange interpolation
+                    zeta = lagrange_interpolation(zeta_h, zeta_l, yh, yl,
+                            yf[comp])
+
+                    x, y[comp], z[comp] = runge_kutta(d2ydx2, dydx, x0, y0[comp], zeta, xf, step_size)
+                    return x, y, z
+
+                else:
+                    print("Bracketing FAIL! Try another set of guesses.")
+
+    return x, y, z  # bang-on solution with z_guess1
+
 
 """
 Gaussian Quadrature
