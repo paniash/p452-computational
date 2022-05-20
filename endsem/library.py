@@ -677,6 +677,11 @@ def chebyshev(x: float, order: int) -> float:
         return 8 * x**2 - 8 * x + 1
     elif order == 3:
         return 32 * x**3 - 48 * x**2 + 18 * x - 1
+    elif order == 4:
+        return 128*x**4 - 256*x**3 + 160*x**2 - 32*x + 1
+    elif order == 5:
+        return 512*x**5 - 1280*x**4 + 1120*x**3 - 400*x**2 + 50*x - 1
+
 
 def chebyshev_first(x: float, order: int) -> float:
     """
@@ -953,7 +958,8 @@ def lagrange_interpolation(zeta_h, zeta_l, yh, yl, y):
 def shooting_method(
     d2ydx2, dydx, x0, y0, xf, yf, z_guess1, z_guess2, step_size, tol=1e-6
 ):
-    """x0: Lower boundary value of x
+    """
+    x0: Lower boundary value of x
     y0 = y(x0)
     xf: Upper boundary value of x
     yf = y(xf)
@@ -1013,7 +1019,7 @@ Gaussian Quadrature
 """
 
 
-def gaussQuad(func, n, llim, ulim):
+def gaussQuad(func, n: int, llim, ulim) -> float:
     # Change of variable for converting to interval [-1,1]
     def newf(x, func, llim, ulim):
         return (ulim - llim) / 2 * func((ulim - llim) / 2 * x + (ulim + llim) / 2)
@@ -1072,11 +1078,11 @@ Partial Differential Equations: Diffusion equation
 """
 
 
-def k(x, mu=0.5, sigma=0.05):
+def k(x, mu=0.5, sigma=0.05) -> float:
     return np.exp(-((x - mu) ** 2) / (2 * sigma**2)) / np.sqrt(2 * np.pi * sigma**2)
 
 
-def g(x, L=1.0):
+def g(x, L=1.0) -> float:
     return np.sin(np.pi * x / L)
 
 
