@@ -2,7 +2,7 @@ from library import pdeExplicit
 from math import sin, pi
 import matplotlib.pyplot as plt
 
-#%% u(x, 0)
+#%% u(x, 0) boundary condition at t=0
 def g(x: float) -> float:
     return 20 * abs(sin(pi * x))
 
@@ -25,7 +25,6 @@ t6 = 500 * dt
 # Boundary condition
 a = b = 0
 
-#%%
 u0, x0 = pdeExplicit(L, nx, dt, t0, g, a, b)
 u1, x1 = pdeExplicit(L, nx, dt, t1, g, a, b)
 u2, x2 = pdeExplicit(L, nx, dt, t2, g, a, b)

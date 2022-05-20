@@ -1,6 +1,5 @@
 from math import sqrt
 
-
 def gaussQuad(func: float, n: int, llim, ulim):
     # Changing interval to general case instead of [-1,1]
     def newf(x, func, llim, ulim):
@@ -34,11 +33,12 @@ def gaussQuad(func: float, n: int, llim, ulim):
         )
 
 
+# Integrand is obtained using Coulomb's law and is integrated from -L/2 to +L/2
 def integrand(x, r=1.0, l=2.0, lamb=1.0):
     return lamb * 1 / (sqrt(r**2 + x**2))
 
 
-#%% Evaluating integral
+# Evaluating integral
 L = 2.0
 integral4 = gaussQuad(integrand, 4, -L / 2, L / 2)
 integral5 = gaussQuad(integrand, 5, -L / 2, L / 2)
@@ -51,7 +51,6 @@ print("6-point V = {}".format(integral6))
 
 # Extract digits from a number
 import math
-
 
 def digits(num):
     x = [
