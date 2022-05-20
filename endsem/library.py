@@ -5,8 +5,8 @@ NOTE: NumPy library is used for elementary functions such as inner product, matr
 multiplication, etc.
 """
 import numpy as np
-from math import sqrt
 import random
+from math import pi, cos, sin, sqrt
 
 """
 Helper Functions
@@ -17,6 +17,18 @@ def read_matrix(file):
         a = [[int(num) for num in line.split(" ")] for line in f]
 
     return a
+
+def read_csv(path):
+    with open(path, 'r+') as file:
+        results = []
+
+        for line in file:
+            line = line.rstrip('\n') # remove `\n` at the end of line
+            items = line.split(' ')
+            results.append(list(items))
+
+        # after for-loop
+        return results
 
 
 # Prints matrix as written on paper
@@ -99,19 +111,6 @@ def gs_decompose(A):
                 U[i][j] = A[i][j]
 
     return L, U
-
-
-def read_csv(path):
-    with open(path, "r+") as file:
-        results = []
-
-        for line in file:
-            line = line.rstrip("\n")  # remove `\n` at the end of line
-            items = line.split(",")
-            results.append(list(items))
-
-        # after for-loop
-        return results
 
 
 ##################################################
@@ -753,6 +752,47 @@ def chebyfit(xvals: np.array, yvals: np.array, degree: int):
 
     return paramsVec, varcoeff, condnum
 
+def legendre(x: float, order: int) -> float:
+    if order == 0:
+        return 1
+    elif order == 1:
+        return x
+    elif order == 2:
+        return 1/2 * (3*x**2 - 1)
+    elif order == 3:
+        return 1/2 * (5*x**3 - 3*x)
+    elif order == 4:
+        return 1/8 * (35*x**4 - 30*x**2 + 3)
+    elif order == 5:
+        return 1/8 * (63*x**5 - 70*x**3 + 15*x)
+    elif order == 6:
+        return 1/16 * (231*x**6 - 315*x**4 + 105*x**2 - 5)
+
+def legendreFit(xvals: np.array, yvals: np.array, degree: int):
+    n = len(xvals)
+    params = degree + 1
+    A = np.zeros((params, params))
+    b = np.zeros(params)
+
+    for i in range(params):
+        for j in range(params):
+            total = 0
+            for k in range(n):
+                total += legendre(xvals[k], j) * legendre(xvals[k], i)
+
+            A[i, j] = total
+
+    for i in range(params):
+        total = 0
+        for k in range(n):
+            total += legendre(xvals[k], i) * yvals[k]
+
+        b[i] = total
+
+    paramsVec = lu_decomposition(A, b)
+
+    return paramsVec
+
 
 """
 Discrete Fourier Transform
@@ -787,7 +827,7 @@ def mlcg(seed: float, a: float, m: float, num: int) -> list:
     return rands
 
 
-def random_walk(N):
+def random_walk(N, a, m, seed):
     """
     N: Number of steps of the random walk
     """
@@ -800,7 +840,7 @@ def random_walk(N):
     for _ in range(N):
         x.append(pos_x)
         y.append(pos_y)
-        theta = 2 * pi * mlcg(173.352, 1103515245, 1, total_randnums)[i]
+        theta = 2 * pi * mlcg(seed, a, m, total_randnums)[i] / m
         dx = cos(theta)
         dy = sin(theta)
         pos_x += dx
@@ -812,7 +852,7 @@ def random_walk(N):
 
 # Function to return all the averages, i.e. RMS distance, radial distance and
 # average displacement of x and y
-def eval_averages(N, num_walks=100):
+def eval_averages(N, a, m, seed, num_walks=100):
     """
     N: number of steps of the walk
     num_walks: number of walks to be averaged over for a given N (user-specified)
@@ -823,13 +863,14 @@ def eval_averages(N, num_walks=100):
     avg_x = 0
     avg_y = 0
     for i in range(num_walks):
-        x, y = random_walk(N)
+        x, y = random_walk(N, a, m, seed)
         x_last = x.pop()  # last x coordinate of the walk
         y_last = y.pop()  # last y coordinate of the walk
         rms_square += x_last**2 + y_last**2
         radial_distance += sqrt(x_last**2 + y_last**2) / float(num_walks)
         avg_x += x_last / float(num_walks)
         avg_y += y_last / float(num_walks)
+        seed += 0.12472     # to change the seed for each iteration
 
     rms = sqrt(rms_square / float(num_walks))
 
@@ -1085,7 +1126,6 @@ Gaussian Quadrature
 
 
 def gaussQuad(func, n: int, llim, ulim) -> float:
-    from math import sqrt
     # Change of variable for converting to interval [-1,1]
     def newf(x, func, llim, ulim):
         return (ulim - llim) / 2 * func((ulim - llim) / 2 * x + (ulim + llim) / 2)
@@ -1187,7 +1227,7 @@ def pdeExplicit(L: int, n: int, dt: float, tmax: float, g: float, a=0, b=0):
         for i in range(1, n):
             # differential eqn
             unew[i] = alpha * u[i - 1] + (1 - 2 * alpha) * u[i] + alpha * u[i + 1]
-            u[i] = unew[i].copy()
+            u[i] = unew[i]
         t += dt
 
     return u, xvals

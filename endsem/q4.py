@@ -1,5 +1,6 @@
 from math import sqrt
 
+
 def gaussQuad(func: float, n: int, llim, ulim):
     # Changing interval to general case instead of [-1,1]
     def newf(x, func, llim, ulim):
@@ -32,14 +33,16 @@ def gaussQuad(func: float, n: int, llim, ulim):
             + 0.171324492 * newf(-0.932469514, func, llim, ulim)
         )
 
+
 def integrand(x, r=1.0, l=2.0, lamb=1.0):
-    return  lamb * 1 / (sqrt(r**2 + x**2))
+    return lamb * 1 / (sqrt(r**2 + x**2))
+
 
 #%% Evaluating integral
 L = 2.0
-integral4 = gaussQuad(integrand, 4, -L/2, L/2)
-integral5 = gaussQuad(integrand, 5, -L/2, L/2)
-integral6 = gaussQuad(integrand, 6, -L/2, L/2)
+integral4 = gaussQuad(integrand, 4, -L / 2, L / 2)
+integral5 = gaussQuad(integrand, 5, -L / 2, L / 2)
+integral6 = gaussQuad(integrand, 6, -L / 2, L / 2)
 
 print("Potential at various degrees of Gaussian Quadrature are")
 print("4-point V = {}".format(integral4))
@@ -48,9 +51,14 @@ print("6-point V = {}".format(integral6))
 
 # Extract digits from a number
 import math
+
+
 def digits(num):
-    x = [(num//(10**i))%10 for i in range(math.ceil(math.log(num, 10))-1, -1, -1)]
+    x = [
+        (num // (10**i)) % 10 for i in range(math.ceil(math.log(num, 10)) - 1, -1, -1)
+    ]
     return x
+
 
 # Convert number to string
 num4 = "%s" % integral4
@@ -58,9 +66,9 @@ num5 = "%s" % integral5
 num6 = "%s" % integral6
 
 # Extract decimal portion
-dec4 = int(num4.split('.')[1])
-dec5 = int(num5.split('.')[1])
-dec6 = int(num6.split('.')[1])
+dec4 = int(num4.split(".")[1])
+dec5 = int(num5.split(".")[1])
+dec6 = int(num6.split(".")[1])
 
 # Store individual digits in array
 dig4 = digits(dec4)
@@ -80,12 +88,12 @@ nine6, ten6 = "%s" % nine6, "%s" % ten6
 digits4 = nine4 + ten4
 digits5 = nine5 + ten5
 digits6 = nine6 + ten6
-print("\nThe 9th and 10th decimal places of the obtained integral values are:\n")
+print("\nThe 9th and 10th decimal places of the obtained integral values are:")
 print("4-point : {}".format(digits4))
 print("5-point : {}".format(digits5))
 print("6-point : {}".format(digits6))
 
-# Comment: Hence, the 9th and 10th decimal places are fairly close by for
+# COMMENT: Hence, the 9th and 10th decimal places are fairly close by for
 # 4-point and 6-point values whereas it is not so for 5-point value.
 
 
@@ -96,7 +104,6 @@ print("6-point : {}".format(digits6))
 # 6-point V = 1.7627300484997592
 #
 # The 9th and 10th decimal places of the obtained integral values are:
-#
 # 4-point : 89
 # 5-point : 54
 # 6-point : 84

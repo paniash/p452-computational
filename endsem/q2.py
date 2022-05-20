@@ -38,5 +38,3 @@ plt.savefig("q2_plot.png")
 # The coefficients in Legendre basis are:
 # c0 = 0.06965779687186321, c1 = 0.0036240203429268145,
 # c2 = -0.012082580199521747, c3 = 0.011426217647052553
-
-## Corresponding plot is `q2_plot.png`

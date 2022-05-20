@@ -20,11 +20,8 @@ rms = eval_averages(N, a, m, seed, num_walks)[0]
 
 print("RMS distance = {}".format(rms))
 print("sqrt(N) = {}".format(sqrt(N)))
-print("Hence RMS distance and sqrt(N) are approximately equal.")
+# COMMENT: Hence the RMS distance and sqrt(N) are approximately equal.
 
 ### OUTPUT
 # RMS distance = 14.278945029165563
 # sqrt(N) = 14.142135623730951
-# Hence RMS distance and sqrt(N) are approximately equal.
-
-## Plot file is `q1_plot.png`
