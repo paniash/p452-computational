@@ -678,9 +678,9 @@ def chebyshev(x: float, order: int) -> float:
     elif order == 3:
         return 32 * x**3 - 48 * x**2 + 18 * x - 1
     elif order == 4:
-        return 128*x**4 - 256*x**3 + 160*x**2 - 32*x + 1
+        return 128 * x**4 - 256 * x**3 + 160 * x**2 - 32 * x + 1
     elif order == 5:
-        return 512*x**5 - 1280*x**4 + 1120*x**3 - 400*x**2 + 50*x - 1
+        return 512 * x**5 - 1280 * x**4 + 1120 * x**3 - 400 * x**2 + 50 * x - 1
 
 
 def chebyshev_first(x: float, order: int) -> float:
@@ -696,9 +696,10 @@ def chebyshev_first(x: float, order: int) -> float:
     elif order == 3:
         return 4 * x**3 - 3 * x
     elif order == 4:
-        return 8*x**4 - 8*x**2 + 1
+        return 8 * x**4 - 8 * x**2 + 1
     elif order == 5:
-        return 16 * x**5 - 20 * x**3 + 5*x
+        return 16 * x**5 - 20 * x**3 + 5 * x
+
 
 def chebyshev_second(x: float, order: int) -> float:
     """
@@ -707,7 +708,7 @@ def chebyshev_second(x: float, order: int) -> float:
     if order == 0:
         return 1
     elif order == 1:
-        return 2*x
+        return 2 * x
     elif order == 2:
         return 4 * x**2 - 1
     elif order == 3:
@@ -715,7 +716,8 @@ def chebyshev_second(x: float, order: int) -> float:
     elif order == 4:
         return 16 * x**4 - 12 * x**2 + 1
     elif order == 5:
-        return 32 * x**5 - 32 * x**3 + 6*x
+        return 32 * x**5 - 32 * x**3 + 6 * x
+
 
 def chebyfit(xvals: np.array, yvals: np.array, degree: int):
     n = len(xvals)
@@ -770,8 +772,6 @@ def dft(x: np.ndarray) -> np.ndarray:
 """
 Pseudorandom number generator
 """
-
-
 def mlcg(seed: float, a: float, m: float, num: int) -> list:
     """
     num: Number of random values
@@ -1020,6 +1020,7 @@ Gaussian Quadrature
 
 
 def gaussQuad(func, n: int, llim, ulim) -> float:
+    from math import sqrt
     # Change of variable for converting to interval [-1,1]
     def newf(x, func, llim, ulim):
         return (ulim - llim) / 2 * func((ulim - llim) / 2 * x + (ulim + llim) / 2)
