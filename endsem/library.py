@@ -617,7 +617,7 @@ Polynomial Fit
 """
 
 
-def polynomial(
+def polyFit(
     xvals: np.ndarray, yvals: np.ndarray, variance: np.ndarray, degree: int = 1
 ):
     """r
