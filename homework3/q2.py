@@ -18,7 +18,7 @@ def dydx(x, y, z):
     return z
 
 x0 = 0.0
-xf = 1.0
+xf = 1.0    # Width of potential well
 
 # Dirichlet boundary conditions
 y0 = 0.0
